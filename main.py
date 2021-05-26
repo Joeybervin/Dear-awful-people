@@ -4,7 +4,6 @@ from characters import Character
 from combat import Combat
 from launch import Launch
 from mots import Mot
-#AJOUT JOEY
 from math import floor
 from random import randint
 
@@ -18,7 +17,7 @@ fight = Combat()
 mouse = pygame.mouse.get_pos()
 
 #AJOUT JOEY
-first = floor(randint(1,2))
+first = floor(randint(1,2)) #J'AI L'IMPRESSION QUE CE N'EST PAS UTILISE
 i = 0
 
 x = 100
@@ -69,14 +68,14 @@ while True:
         p2.update_scorebar(displaysurface)
         menu.combat_group_sprite.add(menu.swearing_letter)
         fight.afficher_mots_affiches()
-# __________________________________________________________________JOEY CODE 16/05/2021
+        # affichage des phrases en fonction du tour des joueurs
         if p1.own_turn < p2.own_turn :
             fight.display_of_sentence_p1_playing(p1,2000, 205, 75, 920, 108,p2)
         else :
             fight.display_of_sentence_p2_playing(p2,2000, 150, 75, 852, 108,p1)
-# ____________________________________________________________________________________________
+
     if fight.winner == True: 
-        fight.final_score(displaysurface, menu, p1, p2)
+      fight.final_score(displaysurface, menu, p1, p2)
 
     #gestion des évènements    
     for event in pygame.event.get(): 
@@ -122,73 +121,63 @@ while True:
             if step > 4 and fight.is_playing == False : 
             #zones cliquables seulement dans le menu
                 if menu.button_bibliotheque.rect.collidepoint(event.pos) :
+                    fight.level = "bibliotheque"
                     menu.end(fight,displaysurface,menu,p1,p2)
                     menu.backgrounds_sprites.add(menu.Background_bibliotheque)
-                if menu.button_entree.rect.collidepoint(event.pos) : 
+                if menu.button_entree.rect.collidepoint(event.pos) :
+                    fight.level = "entree" 
                     menu.end(fight,displaysurface,menu,p1,p2)
                     menu.backgrounds_sprites.add(menu.Background_entree)
-                if menu.button_petitsalon.rect.collidepoint(event.pos) : 
+                if menu.button_petitsalon.rect.collidepoint(event.pos) :
+                    fight.level = "petit salon" 
                     menu.end(fight,displaysurface,menu,p1,p2)
                     menu.backgrounds_sprites.add(menu.Background_petitsalon)
                 if menu.button_jardin_unlocked.rect.collidepoint(event.pos) and fight.level_jardin == True  : 
+                    fight.level = "jardin"
                     menu.end(fight,displaysurface,menu,p1,p2)
                     menu.backgrounds_sprites.add(menu.Background_jardin)
                 if menu.button_salleamanger_unlocked.rect.collidepoint(event.pos) and fight.level_salleamanger == True : 
+                    fight.level = "salle a manger"
                     menu.end(fight,displaysurface,menu,p1,p2)
                     menu.backgrounds_sprites.add(menu.Background_salleamanger)
-            if step > 4 and fight.is_playing == True :
-
-
-
+            if step > 4 and fight.is_playing == True : 
+                #zones cliquable seulement pendant le combat
                 pygame.time.wait(200)
-            #zones cliquable seulement pendant le combat
 
-# __________________________________________________________________JOEY CODE 15/05/2021
                 if fight.first_turn == 0 :
                     fight.first_player_choice(p1, p2, menu)
                 else :
                     if p1.own_turn < p2.own_turn :
                         menu.visibility_object_fight_p1()
                         if pygame.mouse.get_pressed() :
-                            fight.click_word(p1,menu)
+                            fight.click_word(p1,menu,p1,p2)
                             p1.own_turn += 2
-                            print("P1 TOUR :", p1.own_turn)
-                            print("P2 TOUR :", p2.own_turn)
-                            print("P1 : ", p1.my_awful_sentence)
-
                     else:
                         menu.visibility_object_fight_p2()
                         if pygame.mouse.get_pressed() :
-                            fight.click_word(p2,menu)
+                            fight.click_word(p2,menu,p1,p2)
                             p2.own_turn += 2
-                            print("P1 TOUR :", p1.own_turn)
-                            print("P2 TOUR :", p2.own_turn)
-                            print("P2 : ", p2.my_awful_sentence)
+                
+                if fight.winner == False :
+                    #clic pour arrêter l'ajout de mots à la liste 
+                    if len(mots_affiches) - 1 == 0 :
+                        fight.both_end_sentence(p1, p2)
+                    if menu.p1_end_sentence_button.rect.collidepoint(event.pos) and p2.end_sentence == True :
+                        p1.end_sentence = True
+                        fight.both_end_sentence(p1,p2)
+                    if menu.p2_end_sentence_button.rect.collidepoint(event.pos) and p1.end_sentence == True :
+                        p2.end_sentence = True
+                        fight.both_end_sentence(p1, p2)
+                    if menu.p2_end_sentence_button.rect.collidepoint(event.pos) and p1.end_sentence == False :
+                        p2.end_sentence = True
+                        menu.visibility_object_fight_p1()
+                    if menu.p1_end_sentence_button.rect.collidepoint(event.pos) and p2.end_sentence == False :
+                        p1.end_sentence = True
+                        menu.visibility_object_fight_p2()
 
-
-
-
-                if len(mots_affiches) - 1 == 0 :
-                    fight.both_end_sentence(p1, p2, menu)
-                if menu.p2_end_sentence_button.rect.collidepoint(event.pos) and p1.end_sentence == True and fight.winner == False:
-                    p2.end_sentence = True
-                    fight.both_end_sentence(p1, p2,menu)
-                if menu.p1_end_sentence_button.rect.collidepoint(event.pos) and p2.end_sentence == True and fight.winner == False:
-                    p1.end_sentence = True
-                    fight.both_end_sentence(p1,p2,menu)
-                if menu.p2_end_sentence_button.rect.collidepoint(event.pos) and p1.end_sentence == False and fight.winner == False :
-                    p2.end_sentence = True
-                    menu.visibility_object_fight_p1()
-                if menu.p1_end_sentence_button.rect.collidepoint(event.pos) and p2.end_sentence == False and fight.winner == False:
-                    p1.end_sentence = True
-                    menu.visibility_object_fight_p2()
-# _____________________________________________________________________________________________________
-
-
-
-                if menu.button_retourmenu.rect.collidepoint(event.pos) and fight.winner == True: 
-                    menu.buttons_sprites.remove(menu.button_retourmenu)
-# ______________________________________________________________________________JOEY CODE 15/05/2021
+                if menu.button_retourmenu.rect.collidepoint(event.pos) and fight.winner == True:
+                    #fin du combat, reset personnages et retour au menu 
+                    menu.combat_group_sprite.remove(menu.button_retourmenu)
                     p1.end_sentence = False
                     p2.end_sentence = False
                     p1.my_awful_sentence = []
@@ -196,15 +185,10 @@ while True:
                     p1.own_turn = 0
                     p2.own_turn = 0
                     fight.first_turn = 0
-
-# _________________________________________________________________________________________________
                     fight.winner = False
-
                     fight.end(menu,p1,p2)
                     menu.start(fight)
                 
-
-
     #mise à jour du jeu
     pygame.display.flip()
     frame_per_second.tick(FPS)
