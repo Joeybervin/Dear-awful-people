@@ -31,31 +31,27 @@ class Launch :
         self.choix_perso2 = Image(choixperso2, 286, 200)
         self.choix_perso3 = Image(choixperso3, 544, 200)
         self.choix_perso4 = Image(choixperso4, 800, 200)
-        self.button_retourmenu = Image(retourmenu,100,650)
-        #self.button_fincombat = Image(fincombat,100,100)
+        self.button_retourmenu = Image(retourmenu, 410,635)
         #importer les éléments graphiques du lancement du jeu
         self.backgrounds_sprites = pygame.sprite.Group()
         self.backgrounds_sprites.add(self.Background1)
         self.buttons_sprites = pygame.sprite.Group()
         self.buttons_sprites.add(self.button_menu)
-
-        #AJOUT CODE JOEY
-        #élément du combat de chaque joueur (fanions + bubble de dialogue)
-
-        # P1
+        # créer les éléments du combat
         self.p1_dialogue_bubble = Image(p1_dialogue_bubble, 100, 20)
         self.p1_turn_signal = Image(p1_turn_signal, 35, 440)
         self.p1_end_sentence_button = Image(p1_end_sentence_button, 260, 670)
-        # P2
         self.p2_dialogue_bubble = Image(p2_dialogue_bubble, 150, 20)
         self.p2_turn_signal = Image(p2_turn_signal, 1005, 440)
         self.p2_end_sentence_button = Image(p2_end_sentence_button, 755, 670)
-        # Plate-forme de selection des mots
+        self.p1_banner_1 = Image(p1_banner_1, 765, 520)
+        self.p2_banner_1 = Image(p2_banner_1, 20, 520)
+        self.p1_banner_2 = Image(p1_banner_2, 780, 520)
+        self.p2_banner_2 = Image(p2_banner_2, 50, 520)
         self.swearing_letter = Image(swearing_letter, 340, 190)
-        # Le sprite du combat
         self.combat_group_sprite = pygame.sprite.Group()
         self.combat_group_sprite.add(self.swearing_letter)
-    
+
     def start(self,fight):
         #fonction pour revenir au choix des lieux 
         self.is_playing = True
@@ -76,6 +72,7 @@ class Launch :
     def end(self,fight,surface,menu,p1,p2):
         #fonction pour passer du choix des lieux au lieu de combat 
         self.is_playing = False
+        fight.level = "vide"
         self.backgrounds_sprites.remove(self.Background5) 
         self.buttons_sprites.remove(self.button_bibliotheque)
         self.buttons_sprites.remove(self.button_entree)
@@ -84,6 +81,10 @@ class Launch :
         self.buttons_sprites.remove(self.button_salleamanger_locked) 
         self.buttons_sprites.remove(self.button_jardin_unlocked)
         self.buttons_sprites.remove(self.button_salleamanger_unlocked)
+        self.combat_group_sprite.remove(self.p2_dialogue_bubble)
+        self.combat_group_sprite.remove(self.p1_dialogue_bubble)
+        self.combat_group_sprite.remove(menu.p1_turn_signal)
+        self.combat_group_sprite.remove(menu.p2_turn_signal)
         fight.start(surface,menu,p1,p2)
     
     def parties_played(self,fight): 
@@ -100,6 +101,10 @@ class Launch :
         self.combat_group_sprite.remove(self.p2_end_sentence_button)
         self.combat_group_sprite.remove(self.p2_dialogue_bubble)
         self.combat_group_sprite.remove(self.p2_turn_signal)
+        self.combat_group_sprite.remove(self.p1_banner_1)
+        self.combat_group_sprite.remove(self.p2_banner_2)
+        self.combat_group_sprite.remove(self.p2_banner_1)
+        self.combat_group_sprite.remove(self.p1_banner_2)
 
         self.combat_group_sprite.add(self.p1_end_sentence_button)
         self.combat_group_sprite.add(self.p1_dialogue_bubble)
@@ -110,20 +115,11 @@ class Launch :
         self.combat_group_sprite.remove(self.p1_end_sentence_button)
         self.combat_group_sprite.remove(self.p1_dialogue_bubble)
         self.combat_group_sprite.remove(self.p1_turn_signal)
+        self.combat_group_sprite.remove(self.p1_banner_1)
+        self.combat_group_sprite.remove(self.p2_banner_2)
+        self.combat_group_sprite.remove(self.p2_banner_1)
+        self.combat_group_sprite.remove(self.p1_banner_2)
 
         self.combat_group_sprite.add(self.p2_end_sentence_button)
         self.combat_group_sprite.add(self.p2_dialogue_bubble)
         self.combat_group_sprite.add(self.p2_turn_signal)
-
-    def invisibility_fight_object(self) :
-        # Quand Le jeux est terminé les objets de p1 et de p2 sont supprimés
-        self.combat_group_sprite.remove(self.p2_end_sentence_button)
-        self.combat_group_sprite.remove(self.p2_dialogue_bubble)
-        self.combat_group_sprite.remove(self.p2_turn_signal)
-
-        self.combat_group_sprite.remove(self.p1_end_sentence_button)
-        self.combat_group_sprite.remove(self.p1_dialogue_bubble)
-        self.combat_group_sprite.remove(self.p1_turn_signal)
-
-
-
